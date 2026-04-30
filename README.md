@@ -1,22 +1,45 @@
 # 🚀 AWS EC2 Nginx Deployment
 
-This project demonstrates how to deploy a static website on AWS EC2 using Nginx.
+This project demonstrates how to deploy a static website on AWS EC2 using Nginx, applying real-world cloud infrastructure concepts.
 
 ---
 
-## 📌 Project Overview
+## 🧠 Objective
 
-- Launch EC2 instance (Amazon Linux 2023)
-- Configure Security Groups (SSH + HTTP)
-- Install and configure Nginx
-- Deploy a custom HTML page
+Build and deploy a production-like static web server using AWS EC2 and Nginx, applying basic cloud infrastructure principles such as network exposure, security configuration, and service management.
+
+---
+
+## ⚙️ Implementation Steps
+
+1. Provisioned an EC2 instance (Amazon Linux 2023)
+2. Configured Security Groups:
+   - Port 22 (SSH) → restricted access
+   - Port 80 (HTTP) → public access
+3. Installed and configured Nginx
+4. Enabled Nginx as a system service
+5. Deployed a custom static HTML page
+6. Validated service availability via public IP
+
+---
+
+## 🌐 Architecture
+
+User → Internet → AWS EC2 (Public IP) → Nginx → Static Website
+
+### Components
+
+- EC2 Instance (Amazon Linux 2023)
+- Nginx Web Server
+- Security Group (controlled inbound traffic)
+- Public IP for web access
 
 ---
 
 ## 🛠️ Tech Stack
 
 - AWS EC2
-- Amazon Linux
+- Amazon Linux 2023
 - Nginx
 - SSH
 
@@ -40,7 +63,11 @@ This project demonstrates how to deploy a static website on AWS EC2 using Nginx.
 
 ## 🌍 Live Demo
 
+Public access via EC2 instance:
+
 http://13.220.67.89
+
+> ⚠️ Note: Instance availability may vary depending on whether it is running or stopped.
 
 ---
 
