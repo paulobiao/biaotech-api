@@ -22,4 +22,15 @@ jobs:
           script: |
             cd /usr/share/nginx/html
             sudo rm -rf *
-            echo "<h1>Deploy via GitHub Actions 🚀</h1>" | sudo tee index.html
+            sudo tee index.html > /dev/null <<'EOF'
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="UTF-8">
+              <title>Deploy</title>
+            </head>
+            <body>
+              <h1>Deploy via GitHub Actions 🚀</h1>
+            </body>
+            </html>
+            EOF
