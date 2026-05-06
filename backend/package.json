@@ -1,0 +1,24 @@
+{
+  "name": "biaotech-api",
+  "version": "1.0.0",
+  "description": "Backend API for BiaoTech cloud deployment project",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "aws",
+    "ec2",
+    "nginx",
+    "api"
+  ],
+  "author": "Paulo Biao",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
