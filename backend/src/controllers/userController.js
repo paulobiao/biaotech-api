@@ -1,10 +1,12 @@
+const users = [
+  { id: 1, name: "Paulo" },
+  { id: 2, name: "Cristiane" }
+];
+
 exports.getUsers = (req, res) => {
   res.json({
     success: true,
-    users: [
-      { id: 1, name: "Paulo" },
-      { id: 2, name: "Cristiane" }
-    ]
+    users
   });
 };
 
@@ -18,12 +20,16 @@ exports.createUser = (req, res) => {
     });
   }
 
+  const newUser = {
+    id: users.length + 1,
+    name
+  };
+
+  users.push(newUser);
+
   res.status(201).json({
     success: true,
     message: "Usuário criado com sucesso",
-    user: {
-      id: 3,
-      name
-    }
+    user: newUser
   });
 };
