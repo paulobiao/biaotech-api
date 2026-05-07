@@ -9,3 +9,6 @@ app.use(express.json());
 app.use('/', apiRoutes);
 
 module.exports = app;
+const userRoutes = require("./routes/userRoutes");
+
+app.use("/api/users", userRoutes);
