@@ -1,11 +1,6 @@
-const express = require('express');
+const app = require('./src/app');
 
-const app = express();
 const PORT = 3000;
-
-app.get('/', (req, res) => {
-  res.json({ message: 'Backend atualizado via GitHub Actions 🚀' });
-});
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
