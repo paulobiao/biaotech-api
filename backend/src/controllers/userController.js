@@ -12,22 +12,39 @@ exports.getUsers = (req, res) => {
 exports.createUser = (req, res) => {
   const { name } = req.body;
 
-  if (!name) {
-    return res.status(400).json({
+  const result = db
+    .prepare('INSERT INTO users (name) VALUES (?)')
+    .run(name);
+
+  res.json({
+    success: true,
+    message: 'Usuário criado com sucesso',
+    user: {
+      id: result.lastInsertRowid,
+      name
+    }
+  });
+};
+
+exports.deleteUser = (req, res) => {
+  const { id } = req.params;
+
+  const user = db
+    .prepare('SELECT * FROM users WHERE id = ?')
+    .get(id);
+
+  if (!user) {
+    return res.status(404).json({
       success: false,
-      message: 'O campo name é obrigatório'
+      message: 'Usuário não encontrado'
     });
   }
 
-  const result = db.prepare('INSERT INTO users (name) VALUES (?)').run(name);
+  db.prepare('DELETE FROM users WHERE id = ?').run(id);
 
-  const newUser = db
-    .prepare('SELECT * FROM users WHERE id = ?')
-    .get(result.lastInsertRowid);
-
-  res.status(201).json({
+  res.json({
     success: true,
-    message: 'Usuário criado com sucesso',
-    user: newUser
+    message: 'Usuário deletado com sucesso',
+    user
   });
 };
