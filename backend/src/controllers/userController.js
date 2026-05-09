@@ -9,6 +9,26 @@ exports.getUsers = (req, res) => {
   });
 };
 
+exports.getUserById = (req, res) => {
+  const { id } = req.params;
+
+  const user = db
+    .prepare('SELECT * FROM users WHERE id = ?')
+    .get(id);
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: 'Usuário não encontrado'
+    });
+  }
+
+  res.json({
+    success: true,
+    user
+  });
+};
+
 exports.createUser = (req, res) => {
   const { name } = req.body;
 
