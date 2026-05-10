@@ -1,3 +1,5 @@
+const errorMiddleware = require("./middleware/errorMiddleware");
+
 const healthRoutes = require("./routes/healthRoutes");
 
 const express = require('express');
