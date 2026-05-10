@@ -1,79 +1,107 @@
-# 🚀 AWS EC2 Nginx Deployment
+# BiaoTech API
 
-This project demonstrates how to deploy a static website on AWS EC2 using Nginx, applying real-world cloud infrastructure concepts.
+BiaoTech API is a backend project built with Node.js, Express, SQLite, Nginx, PM2, GitHub Actions, and AWS EC2.
 
----
+The goal of this project is to demonstrate a real-world backend deployment workflow using a custom domain, HTTPS, automated deployment, process management, and a structured API architecture.
 
-## 🧠 Objective
+## Tech Stack
 
-Build and deploy a production-like static web server using AWS EC2 and Nginx, applying basic cloud infrastructure principles such as network exposure, security configuration, and service management.
-
----
-
-## ⚙️ Implementation Steps
-
-1. Provisioned an EC2 instance (Amazon Linux 2023)
-2. Configured Security Groups:
-   - Port 22 (SSH) → restricted access
-   - Port 80 (HTTP) → public access
-3. Installed and configured Nginx
-4. Enabled Nginx as a system service
-5. Deployed a custom static HTML page
-6. Validated service availability via public IP
-
----
-
-## 🌐 Architecture
-
-User → Internet → AWS EC2 (Public IP) → Nginx → Static Website
-
-### Components
-
-- EC2 Instance (Amazon Linux 2023)
-- Nginx Web Server
-- Security Group (controlled inbound traffic)
-- Public IP for web access
-
----
-
-## 🛠️ Tech Stack
-
+- Node.js
+- Express
+- SQLite
 - AWS EC2
-- Amazon Linux 2023
 - Nginx
-- SSH
+- PM2
+- GitHub Actions
+- HTTPS / SSL
+- dotenv
 
----
+## Live API
 
-## 📸 Proof of Work
+Production URL:
 
-### 🟢 EC2 Running
-![EC2](screenshots/ec2-running.png)
+```txt
+https://api.biaotech.dev
 
-### 🔐 Security Group (HTTP + SSH)
-![Security](screenshots/security-group.png)
 
-### ⚙️ Nginx Running
-![Nginx](screenshots/nginx-running.png)
+Current Features
+Healthcheck endpoint
+Users CRUD
+SQLite persistence
+Global error middleware
+Validation middleware
+Service layer
+Automated deployment with GitHub Actions
+Process management with PM2
+Reverse proxy with Nginx
+HTTPS enabled
 
-### 🌐 Live Website
-![Website](screenshots/website-live.png)
+API Endpoints
+Healthcheck
+GET /api/health
 
----
+Users
+GET /api/users
+GET /api/users/:id
+POST /api/users
+PUT /api/users/:id
+DELETE /api/users/:id
 
-## 🌍 Live Demo
+Example Requests
+Get all users
+curl https://api.biaotech.dev/api/users
 
-Public access via EC2 instance:
+Create user
+curl -X POST https://api.biaotech.dev/api/users \
+-H "Content-Type: application/json" \
+-d '{"name":"Paulo"}'
 
-http://13.220.67.89
+Update user
+curl -X PUT https://api.biaotech.dev/api/users/1 \
+-H "Content-Type: application/json" \
+-d '{"name":"Paulo Updated"}'
 
-> ⚠️ Note: Instance availability may vary depending on whether it is running or stopped.
+Delete user
+curl -X DELETE https://api.biaotech.dev/api/users/1
 
----
+Project Structure
+backend/
+  src/
+    controllers/
+    database/
+    middleware/
+    routes/
+    services/
+  server.js
+  package.json
 
-## ⚡ Commands Used
+  Architecture Flow
+  Request
+→ Route
+→ Validation Middleware
+→ Controller
+→ Service
+→ Database
+→ Response
 
-```bash
-sudo dnf install nginx -y
-sudo systemctl start nginx
-sudo systemctl enable nginx
+Environment Variables
+
+Create a .env file inside the backend folder:
+PORT=3000
+NODE_ENV=development
+
+Run Locally
+cd backend
+npm install
+npm start
+
+Deployment
+This API is deployed on AWS EC2 using:
+
+GitHub Actions for automated deployment
+PM2 for process management
+Nginx as a reverse proxy
+Certbot / Let's Encrypt for HTTPS
+Author
+
+Paulo Biao
