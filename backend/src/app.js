@@ -8,7 +8,11 @@ const express = require('express');
 
 const apiRoutes = require('./routes/apiRoutes');
 
+const notFoundMiddleware = require("./middleware/notFoundMiddleware");
+
 const app = express();
+
+app.use(notFoundMiddleware);
 
 app.use(loggerMiddleware);
 
