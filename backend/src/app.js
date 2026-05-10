@@ -1,5 +1,7 @@
 const errorMiddleware = require("./middleware/errorMiddleware");
 
+const loggerMiddleware = require("./middleware/loggerMiddleware");
+
 const healthRoutes = require("./routes/healthRoutes");
 
 const express = require('express');
@@ -7,6 +9,8 @@ const express = require('express');
 const apiRoutes = require('./routes/apiRoutes');
 
 const app = express();
+
+app.use(loggerMiddleware);
 
 app.use(express.json());
 
