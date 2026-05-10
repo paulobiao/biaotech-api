@@ -1,8 +1,8 @@
-const db = require("../database/db");
+const userService = require("../services/userService");
 
 exports.getUsers = (req, res, next) => {
   try {
-    const users = db.prepare("SELECT * FROM users").all();
+    const users = userService.findAllUsers();
 
     res.json({
       success: true,
@@ -17,7 +17,7 @@ exports.getUserById = (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const user = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
+    const user = userService.findUserById(id);
 
     if (!user) {
       return res.status(404).json({
@@ -46,19 +46,12 @@ exports.createUser = (req, res, next) => {
       });
     }
 
-    const cleanName = name.trim();
-
-    const result = db
-      .prepare("INSERT INTO users (name) VALUES (?)")
-      .run(cleanName);
+    const user = userService.createUser(name);
 
     res.status(201).json({
       success: true,
       message: "Usuário criado com sucesso",
-      user: {
-        id: result.lastInsertRowid,
-        name: cleanName,
-      },
+      user,
     });
   } catch (error) {
     next(error);
@@ -77,20 +70,16 @@ exports.updateUser = (req, res, next) => {
       });
     }
 
-    const user = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
+    const existingUser = userService.findUserById(id);
 
-    if (!user) {
+    if (!existingUser) {
       return res.status(404).json({
         success: false,
         message: "Usuário não encontrado",
       });
     }
 
-    const cleanName = name.trim();
-
-    db.prepare("UPDATE users SET name = ? WHERE id = ?").run(cleanName, id);
-
-    const updatedUser = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
+    const updatedUser = userService.updateUser(id, name);
 
     res.json({
       success: true,
@@ -106,21 +95,19 @@ exports.deleteUser = (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const user = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
+    const deletedUser = userService.deleteUser(id);
 
-    if (!user) {
+    if (!deletedUser) {
       return res.status(404).json({
         success: false,
         message: "Usuário não encontrado",
       });
     }
 
-    db.prepare("DELETE FROM users WHERE id = ?").run(id);
-
     res.json({
       success: true,
       message: "Usuário deletado com sucesso",
-      user,
+      user: deletedUser,
     });
   } catch (error) {
     next(error);
