@@ -1,28 +1,25 @@
-const errorMiddleware = require("./middleware/errorMiddleware");
+const express = require("express");
 
-const loggerMiddleware = require("./middleware/loggerMiddleware");
-
+const apiRoutes = require("./routes/apiRoutes");
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
 const healthRoutes = require("./routes/healthRoutes");
 
-const express = require('express');
-
-const apiRoutes = require('./routes/apiRoutes');
-
+const loggerMiddleware = require("./middleware/loggerMiddleware");
 const notFoundMiddleware = require("./middleware/notFoundMiddleware");
+const errorMiddleware = require("./middleware/errorMiddleware");
 
 const app = express();
 
-app.use(notFoundMiddleware);
-
+app.use(express.json());
 app.use(loggerMiddleware);
 
-app.use(express.json());
+app.use("/", apiRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/health", healthRoutes);
 
-app.use('/', apiRoutes);
+app.use(notFoundMiddleware);
+app.use(errorMiddleware);
 
 module.exports = app;
-const userRoutes = require("./routes/userRoutes");
-
-app.use("/api/users", userRoutes);
-
-app.use("/api/health", healthRoutes);
