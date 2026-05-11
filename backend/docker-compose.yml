@@ -1,0 +1,12 @@
+services:
+  api:
+    build: .
+    container_name: biaotech-api
+
+    ports:
+      - "3000:3000"
+
+    env_file:
+      - .env
+
+    restart: always
