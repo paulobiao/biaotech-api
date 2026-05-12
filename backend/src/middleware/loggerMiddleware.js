@@ -1,15 +1,7 @@
-const loggerMiddleware = (req, res, next) => {
-  const start = Date.now();
+const morgan = require("morgan");
 
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-
-    console.log(
-      `${req.method} ${req.originalUrl} - ${res.statusCode} - ${duration}ms`
-    );
-  });
-
-  next();
-};
+const loggerMiddleware = morgan(
+  ":date[iso] :method :url :status :response-time ms - :remote-addr"
+);
 
 module.exports = loggerMiddleware;
