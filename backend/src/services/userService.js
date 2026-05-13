@@ -1,42 +1,42 @@
-const db = require("../database/db");
+const pool = require("../database/postgres");
 
-exports.findAllUsers = () => {
-  return db.prepare("SELECT * FROM users").all();
+exports.findAllUsers = async () => {
+  const result = await pool.query("SELECT * FROM users ORDER BY id ASC");
+  return result.rows;
 };
 
-exports.findUserById = (id) => {
-  return db.prepare("SELECT * FROM users WHERE id = ?").get(id);
+exports.findUserById = async (id) => {
+  const result = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+  return result.rows[0];
 };
 
-exports.createUser = (name) => {
+exports.createUser = async (name) => {
   const cleanName = name.trim();
 
-  const result = db
-    .prepare("INSERT INTO users (name) VALUES (?)")
-    .run(cleanName);
+  const result = await pool.query(
+    "INSERT INTO users (name) VALUES ($1) RETURNING *",
+    [cleanName]
+  );
 
-  return {
-    id: result.lastInsertRowid,
-    name: cleanName,
-  };
+  return result.rows[0];
 };
 
-exports.updateUser = (id, name) => {
+exports.updateUser = async (id, name) => {
   const cleanName = name.trim();
 
-  db.prepare("UPDATE users SET name = ? WHERE id = ?").run(cleanName, id);
+  const result = await pool.query(
+    "UPDATE users SET name = $1 WHERE id = $2 RETURNING *",
+    [cleanName, id]
+  );
 
-  return db.prepare("SELECT * FROM users WHERE id = ?").get(id);
+  return result.rows[0];
 };
 
-exports.deleteUser = (id) => {
-  const user = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
+exports.deleteUser = async (id) => {
+  const result = await pool.query(
+    "DELETE FROM users WHERE id = $1 RETURNING *",
+    [id]
+  );
 
-  if (!user) {
-    return null;
-  }
-
-  db.prepare("DELETE FROM users WHERE id = ?").run(id);
-
-  return user;
+  return result.rows[0];
 };

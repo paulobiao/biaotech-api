@@ -1,8 +1,8 @@
 const userService = require("../services/userService");
 
-exports.getUsers = (req, res, next) => {
+exports.getUsers = async (req, res, next) => {
   try {
-    const users = userService.findAllUsers();
+    const users = await userService.findAllUsers();
 
     res.json({
       success: true,
@@ -13,11 +13,11 @@ exports.getUsers = (req, res, next) => {
   }
 };
 
-exports.getUserById = (req, res, next) => {
+exports.getUserById = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const user = userService.findUserById(id);
+    const user = await userService.findUserById(id);
 
     if (!user) {
       return res.status(404).json({
@@ -35,7 +35,7 @@ exports.getUserById = (req, res, next) => {
   }
 };
 
-exports.createUser = (req, res, next) => {
+exports.createUser = async (req, res, next) => {
   try {
     const { name } = req.body;
 
@@ -46,7 +46,7 @@ exports.createUser = (req, res, next) => {
       });
     }
 
-    const user = userService.createUser(name);
+    const user = await userService.createUser(name);
 
     res.status(201).json({
       success: true,
@@ -58,7 +58,7 @@ exports.createUser = (req, res, next) => {
   }
 };
 
-exports.updateUser = (req, res, next) => {
+exports.updateUser = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { name } = req.body;
@@ -70,7 +70,7 @@ exports.updateUser = (req, res, next) => {
       });
     }
 
-    const existingUser = userService.findUserById(id);
+    const existingUser = await userService.findUserById(id);
 
     if (!existingUser) {
       return res.status(404).json({
@@ -79,7 +79,7 @@ exports.updateUser = (req, res, next) => {
       });
     }
 
-    const updatedUser = userService.updateUser(id, name);
+    const updatedUser = await userService.updateUser(id, name);
 
     res.json({
       success: true,
@@ -91,11 +91,11 @@ exports.updateUser = (req, res, next) => {
   }
 };
 
-exports.deleteUser = (req, res, next) => {
+exports.deleteUser = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const deletedUser = userService.deleteUser(id);
+    const deletedUser = await userService.deleteUser(id);
 
     if (!deletedUser) {
       return res.status(404).json({

@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const db = require("../database/db");
+const pool = require("../database/postgres");
 
-exports.login = (req, res, next) => {
+exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -13,9 +13,12 @@ exports.login = (req, res, next) => {
       });
     }
 
-    const user = db
-      .prepare("SELECT * FROM auth_users WHERE email = ?")
-      .get(email);
+    const result = await pool.query(
+      "SELECT * FROM auth_users WHERE email = $1",
+      [email]
+    );
+
+    const user = result.rows[0];
 
     if (!user) {
       return res.status(401).json({

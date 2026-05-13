@@ -9,4 +9,27 @@ services:
     env_file:
       - .env
 
+    depends_on:
+      - postgres
+
     restart: always
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: biaotech-postgres
+
+    ports:
+      - "5432:5432"
+
+    environment:
+      POSTGRES_USER: biaotech
+      POSTGRES_PASSWORD: biaotech_password
+      POSTGRES_DB: biaotech_db
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    restart: always
+
+volumes:
+  postgres_data:
