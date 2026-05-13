@@ -31,5 +31,17 @@ services:
 
     restart: always
 
+  adminer:
+    image: adminer
+    container_name: biaotech-adminer
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - postgres
+
+    restart: always
+
 volumes:
   postgres_data:
