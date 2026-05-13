@@ -1,5 +1,7 @@
 const userService = require("../services/userService");
 
+const { createUserSchema } = require("../validators/userValidator");
+
 exports.getUsers = async (req, res, next) => {
   try {
     const users = await userService.findAllUsers();
@@ -35,18 +37,11 @@ exports.getUserById = async (req, res, next) => {
   }
 };
 
-exports.createUser = async (req, res, next) => {
+exports.createUser = (req, res, next) => {
   try {
-    const { name } = req.body;
+    const validatedData = createUserSchema.parse(req.body);
 
-    if (!name || name.trim() === "") {
-      return res.status(400).json({
-        success: false,
-        message: "O campo name é obrigatório",
-      });
-    }
-
-    const user = await userService.createUser(name);
+    const user = userService.createUser(validatedData.name);
 
     res.status(201).json({
       success: true,
