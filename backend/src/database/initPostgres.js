@@ -1,4 +1,4 @@
-const pool = require("./postgres");
+const { pool } = require("../database/postgres");
 const bcrypt = require("bcryptjs");
 
 const initPostgres = async () => {

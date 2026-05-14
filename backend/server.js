@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-require("./src/database/postgres");
+const { testConnection } = require("./src/database/postgres");
 
 const runMigrations = require("./src/database/runMigrations");
 const initPostgres = require("./src/database/initPostgres");
@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || "development";
 
 const startServer = async () => {
+  await testConnection();
   await runMigrations();
   await initPostgres();
 

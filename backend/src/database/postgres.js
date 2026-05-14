@@ -8,12 +8,16 @@ const pool = new Pool({
   database: process.env.DB_NAME,
 });
 
-pool.connect()
-  .then(() => {
+const testConnection = async () => {
+  try {
+    await pool.query("SELECT 1");
     console.log("✅ Connected to PostgreSQL");
-  })
-  .catch((error) => {
+  } catch (error) {
     console.error("❌ PostgreSQL connection error:", error);
-  });
+  }
+};
 
-module.exports = pool;
+module.exports = {
+  pool,
+  testConnection,
+};
