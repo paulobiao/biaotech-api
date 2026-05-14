@@ -3,21 +3,6 @@ const bcrypt = require("bcryptjs");
 
 const initPostgres = async () => {
   try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        name TEXT NOT NULL
-      )
-    `);
-
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS auth_users (
-        id SERIAL PRIMARY KEY,
-        email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
-      )
-    `);
-
     const adminUser = await pool.query(
       "SELECT * FROM auth_users WHERE email = $1",
       ["admin@biaotech.dev"]
@@ -37,10 +22,10 @@ const initPostgres = async () => {
       console.log("✅ PostgreSQL admin user created");
     }
 
-    console.log("✅ PostgreSQL tables initialized");
+    console.log("✅ PostgreSQL seed completed");
 
   } catch (error) {
-    console.error("❌ PostgreSQL init error:", error);
+    console.error("❌ PostgreSQL seed error:", error);
   }
 };
 
