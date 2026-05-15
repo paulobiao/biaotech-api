@@ -1,20 +1,25 @@
 const request = require("supertest");
 const app = require("../src/app");
+const runMigrations = require("../src/database/runMigrations");
+const initPostgres = require("../src/database/initPostgres");
 
 describe("Users endpoints", () => {
   let token;
   let createdUserId;
 
-  beforeAll(async () => {
-    const loginResponse = await request(app)
-      .post("/api/auth/login")
-      .send({
-        email: "admin@biaotech.dev",
-        password: "123456",
-      });
+beforeAll(async () => {
+  await runMigrations();
+  await initPostgres();
 
-    token = loginResponse.body.token;
-  });
+  const loginResponse = await request(app)
+    .post("/api/auth/login")
+    .send({
+      email: "admin@biaotech.dev",
+      password: "123456",
+    });
+
+  token = loginResponse.body.token;
+});
 
   it("should deny access without token", async () => {
     const response = await request(app)
