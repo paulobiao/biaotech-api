@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const pool = require("../database/postgres");
+const { pool } = require("../database/postgres");
 
 exports.login = async (req, res, next) => {
   try {

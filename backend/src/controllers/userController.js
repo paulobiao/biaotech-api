@@ -37,11 +37,11 @@ exports.getUserById = async (req, res, next) => {
   }
 };
 
-exports.createUser = (req, res, next) => {
+exports.createUser = async (req, res, next) => {
   try {
     const validatedData = createUserSchema.parse(req.body);
 
-    const user = userService.createUser(validatedData.name);
+    const user = await userService.createUser(validatedData.name);
 
     res.status(201).json({
       success: true,

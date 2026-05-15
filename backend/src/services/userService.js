@@ -1,4 +1,4 @@
-const pool = require("../database/postgres");
+const { pool } = require("../database/postgres");
 
 exports.findAllUsers = async () => {
   const result = await pool.query("SELECT * FROM users ORDER BY id ASC");
