@@ -1,4 +1,5 @@
 require("dotenv").config();
+require("ts-node/register/transpile-only");
 
 const { testConnection } = require("./src/database/postgres");
 

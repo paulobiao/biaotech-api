@@ -1,16 +1,25 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const { pool } = require("../database/postgres");
+import type { Request, Response, NextFunction } from "express";
+import jwt, { type Secret, type SignOptions } from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import { pool } from "../database/postgres";
 
-exports.login = async (req, res, next) => {
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body as {
+      email?: string;
+      password?: string;
+    };
 
     if (!email || !password) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: "Email e senha são obrigatórios",
       });
+      return;
     }
 
     const result = await pool.query(
@@ -21,19 +30,21 @@ exports.login = async (req, res, next) => {
     const user = result.rows[0];
 
     if (!user) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         message: "Credenciais inválidas",
       });
+      return;
     }
 
     const passwordMatch = bcrypt.compareSync(password, user.password);
 
     if (!passwordMatch) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         message: "Credenciais inválidas",
       });
+      return;
     }
 
     const token = jwt.sign(
@@ -41,10 +52,10 @@ exports.login = async (req, res, next) => {
         id: user.id,
         email: user.email,
       },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET as Secret,
       {
         expiresIn: process.env.JWT_EXPIRES_IN || "1h",
-      }
+      } as SignOptions
     );
 
     res.json({

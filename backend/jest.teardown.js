@@ -1,6 +1,6 @@
-const { pool } = require("./src/database/postgres");
+
 
 module.exports = async () => {
-  const { pool } = require("./src/database/postgres");
-  await pool.end();
+  const postgres = require("./src/database/postgres");
+  await postgres.pool.end();
 };
