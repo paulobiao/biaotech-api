@@ -11,12 +11,13 @@ const swaggerOptions = {
 
     servers: [
       {
-        url: "http://localhost:3000",
-        description: "Local server",
-      },
-      {
         url: "https://api.biaotech.dev",
         description: "Production server",
+    
+      },
+      {
+         url: "http://localhost:3000",
+        description: "Local server",
       },
     ],
 
