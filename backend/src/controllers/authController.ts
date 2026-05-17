@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import jwt, { type Secret, type SignOptions } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { pool } from "../database/postgres";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
 export const login = async (
   req: Request,
@@ -15,10 +16,7 @@ export const login = async (
     };
 
     if (!email || !password) {
-      res.status(400).json({
-        success: false,
-        message: "Email e senha são obrigatórios",
-      });
+      errorResponse(res, 400, "Email e senha são obrigatórios");
       return;
     }
 
@@ -30,20 +28,14 @@ export const login = async (
     const user = result.rows[0];
 
     if (!user) {
-      res.status(401).json({
-        success: false,
-        message: "Credenciais inválidas",
-      });
+      errorResponse(res, 401, "Credenciais inválidas");
       return;
     }
 
     const passwordMatch = bcrypt.compareSync(password, user.password);
 
     if (!passwordMatch) {
-      res.status(401).json({
-        success: false,
-        message: "Credenciais inválidas",
-      });
+      errorResponse(res, 401, "Credenciais inválidas");
       return;
     }
 
@@ -58,11 +50,7 @@ export const login = async (
       } as SignOptions
     );
 
-    res.json({
-      success: true,
-      message: "Login realizado com sucesso",
-      token,
-    });
+    successResponse(res, 200, "Login realizado com sucesso", { token });
   } catch (error) {
     next(error);
   }
