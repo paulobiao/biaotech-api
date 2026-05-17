@@ -13,6 +13,7 @@ const healthRoutes = require("./routes/healthRoutes");
 const loggerMiddleware = require("./middleware/loggerMiddleware");
 const notFoundMiddleware = require("./middleware/notFoundMiddleware");
 const errorMiddleware = require("./middleware/errorMiddleware");
+const requestIdMiddleware = require("./middleware/requestIdMiddleware");
 
 const app = express();
 
@@ -29,6 +30,7 @@ const apiLimiter = rateLimit({
 
 app.use(helmet());
 app.use(express.json());
+app.use(requestIdMiddleware);
 app.use(loggerMiddleware);
 app.use(apiLimiter);
 
