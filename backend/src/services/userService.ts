@@ -3,11 +3,17 @@ import type { User } from "../types/user";
 
 export const findAllUsers = async (): Promise<User[]> => {
   const result = await pool.query<User>("SELECT * FROM users ORDER BY id ASC");
+
   return result.rows;
 };
 
-export const findUserById = async (id: string | number): Promise<User | undefined> => {
-  const result = await pool.query<User>("SELECT * FROM users WHERE id = $1", [id]);
+export const findUserById = async (
+  id: string | number
+): Promise<User | undefined> => {
+  const result = await pool.query<User>("SELECT * FROM users WHERE id = $1", [
+    id,
+  ]);
+
   return result.rows[0];
 };
 
@@ -36,7 +42,9 @@ export const updateUser = async (
   return result.rows[0];
 };
 
-export const deleteUser = async (id: string | number): Promise<User | undefined> => {
+export const deleteUser = async (
+  id: string | number
+): Promise<User | undefined> => {
   const result = await pool.query<User>(
     "DELETE FROM users WHERE id = $1 RETURNING *",
     [id]
