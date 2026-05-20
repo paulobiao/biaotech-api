@@ -2,6 +2,9 @@ import express from "express";
 
 const authMiddlewareModule = require("../middleware/authMiddleware");
 const authMiddleware = authMiddlewareModule.default || authMiddlewareModule;
+const authorizeRolesModule = require("../middleware/authorizeRoles");
+const authorizeRoles =
+  authorizeRolesModule.default || authorizeRolesModule;
 const validateRequest = require("../middleware/validateRequest");
 
 const { createUserSchema } = require("../validators/userValidator");
@@ -34,6 +37,11 @@ router.put(
   updateUser
 );
 
-router.delete("/:id", authMiddleware, deleteUser);
+router.delete(
+  "/:id",
+  authMiddleware,
+  authorizeRoles("admin"),
+  deleteUser
+);
 
 export default router;

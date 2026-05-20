@@ -1,8 +1,11 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt, { type Secret, type SignOptions } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+
 import { pool } from "../database/postgres";
 import { successResponse, errorResponse } from "../utils/apiResponse";
+import type { LoginDto } from "../dtos/auth.dto";
+import type { AuthUser } from "../types/user";
 
 export const login = async (
   req: Request,
@@ -10,17 +13,14 @@ export const login = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { email, password } = req.body as {
-      email?: string;
-      password?: string;
-    };
+    const { email, password } = req.body as LoginDto;
 
     if (!email || !password) {
       errorResponse(res, 400, "Email e senha são obrigatórios");
       return;
     }
 
-    const result = await pool.query(
+    const result = await pool.query<AuthUser>(
       "SELECT * FROM auth_users WHERE email = $1",
       [email]
     );
@@ -41,9 +41,10 @@ export const login = async (
 
     const token = jwt.sign(
       {
-        id: user.id,
-        email: user.email,
-      },
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    },
       process.env.JWT_SECRET as Secret,
       {
         expiresIn: process.env.JWT_EXPIRES_IN || "1h",

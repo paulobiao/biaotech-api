@@ -54,10 +54,16 @@ router.post("/login", login);
  *         description: Missing, invalid, or expired token
  */
 router.get("/me", authMiddleware, (req, res) => {
+  const user = {
+    id: req.user?.id,
+    email: req.user?.email,
+    role: req.user?.role,
+  };
+
   res.json({
     success: true,
-    user: req.user,
+    message: "Usuário autenticado",
+    user,
   });
 });
-
 module.exports = router;

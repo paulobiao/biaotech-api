@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import * as userService from "../services/userService";
 import { successResponse, errorResponse } from "../utils/apiResponse";
+import type { CreateUserDto, UpdateUserDto } from "../dtos/user.dto";
 
 export const getUsers = async (
   req: Request,
@@ -43,7 +44,7 @@ export const createUser = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { name } = req.body as { name: string };
+    const { name } = req.body as CreateUserDto;
 
     const user = await userService.createUser(name);
 
@@ -60,7 +61,7 @@ export const updateUser = async (
 ): Promise<void> => {
   try {
     const id = Number(req.params.id);
-    const { name } = req.body as { name: string };
+    const { name } = req.body as UpdateUserDto;
 
     const existingUser = await userService.findUserById(id);
 

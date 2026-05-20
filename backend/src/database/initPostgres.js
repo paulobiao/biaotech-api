@@ -13,17 +13,25 @@ const initPostgres = async () => {
 
       await pool.query(
         `
-        INSERT INTO auth_users (email, password)
-        VALUES ($1, $2)
+        INSERT INTO auth_users (email, password, role)
+        VALUES ($1, $2, $3)
         `,
-        ["admin@biaotech.dev", hashedPassword]
+        ["admin@biaotech.dev", hashedPassword, "admin"]
       );
 
       console.log("✅ PostgreSQL admin user created");
+    } else {
+      await pool.query(
+        `
+        UPDATE auth_users
+        SET role = $1
+        WHERE email = $2
+        `,
+        ["admin", "admin@biaotech.dev"]
+      );
     }
 
     console.log("✅ PostgreSQL seed completed");
-
   } catch (error) {
     console.error("❌ PostgreSQL seed error:", error);
   }
