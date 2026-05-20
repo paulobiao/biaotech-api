@@ -7,7 +7,8 @@ const swaggerSpec = require("./config/swagger");
 
 const apiRoutes = require("./routes/apiRoutes");
 const authRoutes = require("./routes/authRoutes");
-const userRoutes = require("./routes/userRoutes");
+const userRoutesModule = require("./routes/userRoutes");
+const userRoutes = userRoutesModule.default || userRoutesModule;
 const healthRoutes = require("./routes/healthRoutes");
 
 const loggerMiddleware = require("./middleware/loggerMiddleware");
