@@ -1,6 +1,7 @@
 import express from "express";
 
-const authMiddleware = require("../middleware/authMiddleware");
+const authMiddlewareModule = require("../middleware/authMiddleware");
+const authMiddleware = authMiddlewareModule.default || authMiddlewareModule;
 const validateRequest = require("../middleware/validateRequest");
 
 const { createUserSchema } = require("../validators/userValidator");

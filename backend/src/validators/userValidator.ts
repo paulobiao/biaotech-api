@@ -1,6 +1,6 @@
-const { z } = require("zod");
+import { z } from "zod";
 
-const createUserSchema = z.object({
+export const createUserSchema = z.object({
   name: z
     .string()
     .min(3, "Nome deve ter pelo menos 3 caracteres")
@@ -8,6 +8,4 @@ const createUserSchema = z.object({
     .trim(),
 });
 
-module.exports = {
-  createUserSchema,
-};
+export type CreateUserInput = z.infer<typeof createUserSchema>;

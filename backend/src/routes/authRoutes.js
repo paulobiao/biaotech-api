@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const { login } = require("../controllers/authController");
-const authMiddleware = require("../middleware/authMiddleware");
+const authMiddlewareModule = require("../middleware/authMiddleware");
+const authMiddleware = authMiddlewareModule.default || authMiddlewareModule;
 
 /**
  * @swagger
