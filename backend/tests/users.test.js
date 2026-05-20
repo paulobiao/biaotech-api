@@ -1,29 +1,43 @@
 const request = require("supertest");
+const jwt = require("jsonwebtoken");
+
 const app = require("../src/app");
 const runMigrations = require("../src/database/runMigrations");
 const initPostgres = require("../src/database/initPostgres");
 
 describe("Users endpoints", () => {
-  let token;
+  let adminToken;
+  let userToken;
   let createdUserId;
 
-beforeAll(async () => {
-  await runMigrations();
-  await initPostgres();
+  beforeAll(async () => {
+    await runMigrations();
+    await initPostgres();
 
-  const loginResponse = await request(app)
-    .post("/api/auth/login")
-    .send({
-      email: "admin@biaotech.dev",
-      password: "123456",
-    });
+    const loginResponse = await request(app)
+      .post("/api/auth/login")
+      .send({
+        email: "admin@biaotech.dev",
+        password: "123456",
+      });
 
-  token = loginResponse.body.token;
-});
+    adminToken = loginResponse.body.token;
+
+    userToken = jwt.sign(
+      {
+        id: 999,
+        email: "regular@biaotech.dev",
+        role: "user",
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+  });
 
   it("should deny access without token", async () => {
-    const response = await request(app)
-      .get("/api/users");
+    const response = await request(app).get("/api/users");
 
     expect(response.statusCode).toBe(401);
     expect(response.body.success).toBe(false);
@@ -32,7 +46,7 @@ beforeAll(async () => {
   it("should allow access with valid JWT token", async () => {
     const response = await request(app)
       .get("/api/users")
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${adminToken}`);
 
     expect(response.statusCode).toBe(200);
     expect(response.body.success).toBe(true);
@@ -42,7 +56,7 @@ beforeAll(async () => {
   it("should create a new user", async () => {
     const response = await request(app)
       .post("/api/users")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${adminToken}`)
       .send({
         name: "Paulo Test",
       });
@@ -57,7 +71,7 @@ beforeAll(async () => {
   it("should validate user name", async () => {
     const response = await request(app)
       .post("/api/users")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${adminToken}`)
       .send({
         name: "a",
       });
@@ -69,7 +83,7 @@ beforeAll(async () => {
   it("should get user by id", async () => {
     const response = await request(app)
       .get(`/api/users/${createdUserId}`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${adminToken}`);
 
     expect(response.statusCode).toBe(200);
     expect(response.body.user.id).toBe(createdUserId);
@@ -78,7 +92,7 @@ beforeAll(async () => {
   it("should update user", async () => {
     const response = await request(app)
       .put(`/api/users/${createdUserId}`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${adminToken}`)
       .send({
         name: "Updated User",
       });
@@ -87,10 +101,20 @@ beforeAll(async () => {
     expect(response.body.user.name).toBe("Updated User");
   });
 
-  it("should delete user", async () => {
+  it("should deny delete user for regular user role", async () => {
     const response = await request(app)
       .delete(`/api/users/${createdUserId}`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
+
+    expect(response.statusCode).toBe(403);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Acesso negado");
+  });
+
+  it("should allow delete user for admin role", async () => {
+    const response = await request(app)
+      .delete(`/api/users/${createdUserId}`)
+      .set("Authorization", `Bearer ${adminToken}`);
 
     expect(response.statusCode).toBe(200);
     expect(response.body.success).toBe(true);
