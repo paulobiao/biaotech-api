@@ -9,9 +9,21 @@ export const getUsers = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const users = await userService.findAllUsers();
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const search =
+      typeof req.query.search === "string" ? req.query.search : undefined;
 
-    successResponse(res, 200, "Usuários listados com sucesso", { users });
+    const { users, pagination } = await userService.findUsers({
+      page,
+      limit,
+      search,
+    });
+
+    successResponse(res, 200, "Usuários listados com sucesso", {
+      users,
+      pagination,
+    });
   } catch (error) {
     next(error);
   }
