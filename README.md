@@ -1,20 +1,23 @@
 # BiaoTech API
-![CI](https://github.com/paulobiao/aws-ec2-nginx-deploy/actions/workflows/deploy.yml/badge.svg)
 
-Production-ready backend API built with Node.js, Express, PostgreSQL, Docker, AWS EC2, Nginx and GitHub Actions.
+![CI](https://github.com/paulobiao/biaotech-api/actions/workflows/deploy.yml/badge.svg)
 
-This project was designed to simulate a real-world backend architecture with authentication, automated deployment pipeline, infrastructure setup, integration tests, migrations, Swagger documentation and incremental TypeScript migration.
+Production-ready REST API built with Node.js, Express, PostgreSQL, Docker, AWS EC2, Nginx and GitHub Actions.
+
+This project simulates a real-world backend architecture with authentication, RBAC authorization, automated deployment pipeline, Dockerized development environment, Swagger documentation, integration tests, PostgreSQL migrations and incremental TypeScript migration.
 
 ---
 
 # Live Environment
 
 ## Production API
+
 ```txt
 https://api.biaotech.dev/api/health
 ```
 
 ## Swagger Documentation
+
 ```txt
 https://api.biaotech.dev/api/docs
 ```
@@ -24,15 +27,18 @@ https://api.biaotech.dev/api/docs
 # Tech Stack
 
 ## Backend
+
 * Node.js
 * Express.js
 * PostgreSQL
 * JWT Authentication
+* RBAC Authorization
 * Zod Validation
 * Swagger/OpenAPI
-* TypeScript (incremental migration)
+* TypeScript
 
 ## Infrastructure
+
 * AWS EC2
 * Nginx Reverse Proxy
 * PM2 Process Manager
@@ -41,6 +47,7 @@ https://api.biaotech.dev/api/docs
 * HTTPS with Let's Encrypt
 
 ## Testing & Quality
+
 * Jest
 * Supertest
 * ESLint
@@ -49,9 +56,12 @@ https://api.biaotech.dev/api/docs
 ---
 
 # Features
+
 * JWT authentication
+* Role-based access control (RBAC)
 * Protected routes
 * CRUD operations
+* Pagination and search filters
 * PostgreSQL integration
 * Database migrations
 * Automated database seed
@@ -59,10 +69,10 @@ https://api.biaotech.dev/api/docs
 * Integration tests
 * CI/CD pipeline
 * Dockerized development environment
-* TypeScript incremental architecture
-* Rate limiting middleware
 * Centralized error handling
 * Request logging middleware
+* Rate limiting middleware
+* Incremental TypeScript migration strategy
 
 ---
 
@@ -78,7 +88,8 @@ Node.js + Express API
 PostgreSQL Database
 ```
 
-### Infrastructure Flow
+## Infrastructure Flow
+
 ```txt
 GitHub Push
    ↓
@@ -93,281 +104,186 @@ PM2 Restart
 
 ---
 
+# RBAC Authorization
+
+The API implements role-based authorization using JWT payload roles.
+
+Example roles:
+
+```txt
+admin
+user
+```
+
+Admin-only endpoints are protected through dedicated authorization middleware.
+
+Example:
+
+```ts
+authorizeRoles("admin")
+```
+
+---
+
+# Pagination & Search
+
+The users endpoint supports pagination and filtering.
+
+Example:
+
+```http
+GET /api/users?page=1&limit=10&search=paulo
+```
+
+Example response:
+
+```json
+{
+  "success": true,
+  "users": [
+    {
+      "id": 1,
+      "name": "Paulo Test"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 1,
+    "totalPages": 1
+  }
+}
+```
+
+---
+
 # Project Structure
 
 ```txt
 backend/
 │
 ├── src/
-│   ├── config/
 │   ├── controllers/
 │   ├── database/
+│   ├── dtos/
 │   ├── middleware/
 │   ├── routes/
 │   ├── services/
 │   ├── types/
-│   ├── validators/
-│   └── app.js
+│   ├── utils/
+│   └── validators/
 │
-├── tests/
 ├── migrations/
-│
-├── server.js
-├── server.ts
-│
+├── tests/
 ├── docker-compose.yml
-├── tsconfig.json
-├── jest.config.js
-├── eslint.config.js
-├── package.json
-└── README.md
-```
-
----
-
-# Authentication
-
-Authentication is implemented using JWT.
-
-## Login Endpoint
-```http
-POST /api/auth/login
-```
-
-### Example Request
-```json
-{
-  "email": "admin@biaotech.dev",
-  "password": "123456"
-}
-```
-
-### Example Response
-```json
-{
-  "success": true,
-  "message": "Login realizado com sucesso",
-  "token": "JWT_TOKEN"
-}
-```
-
----
-
-# API Endpoints
-
-## Health Check
-```http
-GET /api/health
-```
-
-## Authentication
-```http
-POST /api/auth/login
-```
-
-## Users
-```http
-GET    /api/users
-GET    /api/users/:id
-POST   /api/users
-PUT    /api/users/:id
-DELETE /api/users/:id
-```
-
----
-
-# Local Development
-
-## Clone Repository
-```bash
-git clone https://github.com/paulobiao/aws-ec2-nginx-deploy.git
-cd backend
-```
-
----
-
-# Environment Variables
-
-Create a `.env` file:
-```env
-PORT=3000
-NODE_ENV=development
-JWT_SECRET=super_secret_key
-JWT_EXPIRES_IN=1h
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=biaotech
-DB_PASSWORD=biaotech_password
-DB_NAME=biaotech_db
-```
-
----
-
-# Running with Docker
-
-## Start Containers
-```bash
-docker compose up --build
-```
-
-## Stop Containers
-```bash
-docker compose down
+├── Dockerfile
+└── package.json
 ```
 
 ---
 
 # Running Locally
 
+## Clone Repository
+
+```bash
+git clone https://github.com/paulobiao/biaotech-api.git
+```
+
 ## Install Dependencies
+
 ```bash
 npm install
 ```
 
-## Start Development Server
+## Configure Environment Variables
+
+Create a `.env` file using `.env.example`.
+
+---
+
+# Running with Docker
+
+```bash
+docker compose up --build
+```
+
+---
+
+# Run Development Server
+
 ```bash
 npm run dev
 ```
 
-## TypeScript Runtime
-```bash
-npm run dev:ts
-```
-
 ---
 
-# Database Migrations
+# Running Tests
 
-Migrations run automatically when the server starts.
-
-Example:
-```txt
-Running migration: 001_create_users.sql
-Running migration: 002_create_auth_users.sql
-```
-
----
-
-# Automated Seed
-
-The project automatically creates an admin user for testing purposes.
-
-## Default Credentials
-```txt
-Email: admin@biaotech.dev
-Password: 123456
-```
-
----
-
-# Testing
-
-## Run Tests
 ```bash
 npm test
 ```
 
-## Current Test Coverage
-* Authentication flow
-* Protected routes
-* CRUD operations
-* Validation middleware
-* Health endpoint
+---
+
+# API Documentation
+
+Swagger documentation:
+
+```txt
+https://api.biaotech.dev/api/docs
+```
 
 ---
 
-# Code Quality
+# Security Notes
 
-## Type Checking
-```bash
-npm run type-check
-```
-
-## Lint
-```bash
-npm run lint
-```
-
-## Format Code
-```bash
-npm run format
-```
+* Environment variables are managed through `.env` files.
+* JWT authentication protects private routes.
+* RBAC middleware protects admin-only operations.
+* Rate limiting helps mitigate abuse.
+* Sensitive credentials are intentionally not exposed in this repository.
 
 ---
 
 # CI/CD Pipeline
 
-This project uses GitHub Actions to:
-* Run automated tests
-* Validate PostgreSQL integration
-* Deploy automatically to AWS EC2
-* Restart application with PM2
+The project uses GitHub Actions for automated deployment.
 
-Workflow:
+Deployment flow:
+
 ```txt
-Push to main
+Push to main branch
    ↓
-Run Tests
+GitHub Actions workflow
    ↓
-Build Validation
+Run lint
    ↓
-Deploy to EC2
+Run tests
+   ↓
+Deploy to AWS EC2
+   ↓
+Restart PM2 service
 ```
 
 ---
 
-# Production Infrastructure
+# Current Engineering Focus
 
-## AWS EC2
-Application hosted on a real EC2 instance.
-
-## Nginx
-Used as reverse proxy with HTTPS support.
-
-## PM2
-Responsible for process management and automatic restart.
-
-## HTTPS
-SSL certificates managed using Let's Encrypt.
-
----
-
-# TypeScript Migration Strategy
-
-This project follows an incremental TypeScript migration strategy.
-
-Current architecture supports:
-* JavaScript + TypeScript hybrid runtime
-* Typed services
-* Typed controllers
-* Shared interfaces
-* Type-safe PostgreSQL layer
-
-The migration is being performed gradually to preserve application stability while improving maintainability and scalability.
-
----
-
-# Future Improvements
+* TypeScript migration completion
+* Structured logging improvements
+* Repository pattern architecture
 * Refresh token implementation
-* RBAC authorization
-* Redis cache layer
-* Observability/monitoring
-* Full TypeScript migration
-* Production Docker image
-* Kubernetes deployment
+* API observability improvements
 
 ---
 
 # Author
 
 Paulo Biao
-Backend & Cloud Computing Project
 
-Focused on:
-* Backend Engineering
-* Cloud Infrastructure
-* AWS
-* Node.js
-* TypeScript
-* DevOps
-* PostgreSQL
+LinkedIn:
+
+```txt
+https://www.linkedin.com/in/paulobiao/
+```
