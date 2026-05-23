@@ -1,5 +1,6 @@
 const request = require("supertest");
-const app = require("../src/app");
+const appModule = require("../src/app");
+const app = appModule.default || appModule;
 const runMigrations = require("../src/database/runMigrations");
 const initPostgres = require("../src/database/initPostgres");
 const { pool } = require("../src/database/postgres");

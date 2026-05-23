@@ -1,7 +1,7 @@
-const express = require("express");
-const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
-const swaggerUi = require("swagger-ui-express");
+import express from "express";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import swaggerUi from "swagger-ui-express";
 
 const swaggerSpec = require("./config/swagger");
 
@@ -17,6 +17,7 @@ const errorMiddleware = require("./middleware/errorMiddleware");
 const requestIdMiddleware = require("./middleware/requestIdMiddleware");
 
 const app = express();
+
 app.set("trust proxy", 1);
 
 const apiLimiter = rateLimit({
@@ -46,4 +47,4 @@ app.use("/api/health", healthRoutes);
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 
-module.exports = app;
+export default app;
