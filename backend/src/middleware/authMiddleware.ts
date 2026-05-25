@@ -1,10 +1,10 @@
-import type { Request, Response, NextFunction } from "express";
+import type { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-import type { JwtPayload } from "../types/auth";
+import type { AuthRequest, JwtPayload } from "../types/auth";
 
 const authMiddleware = (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ): void => {
