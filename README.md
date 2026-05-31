@@ -2,9 +2,9 @@
 
 ![CI](https://github.com/paulobiao/biaotech-api/actions/workflows/deploy.yml/badge.svg)
 
-Production-ready REST API built with Node.js, Express, PostgreSQL, Docker, AWS EC2, Nginx and GitHub Actions.
+Production-ready REST API built with Node.js, Express, TypeScript, PostgreSQL, Docker, AWS EC2, Nginx and GitHub Actions.
 
-This project simulates a real-world backend architecture with authentication, RBAC authorization, automated deployment pipeline, Dockerized development environment, Swagger documentation, integration tests, PostgreSQL migrations and incremental TypeScript migration.
+This project simulates a real-world backend architecture with JWT authentication, RBAC authorization, PostgreSQL integration, automated deployment pipeline, Dockerized development environment, Swagger documentation, structured logging, integration testing and production-ready TypeScript builds.
 
 ---
 
@@ -19,7 +19,7 @@ https://api.biaotech.dev/api/health
 ## Swagger Documentation
 
 ```txt
-https://api.biaotech.dev/api/docs
+https://api.biaotech.dev/api/docs/
 ```
 
 ---
@@ -30,12 +30,13 @@ https://api.biaotech.dev/api/docs
 
 * Node.js
 * Express.js
+* TypeScript
 * PostgreSQL
 * JWT Authentication
 * RBAC Authorization
 * Zod Validation
 * Swagger/OpenAPI
-* TypeScript
+* Pino Logging
 
 ## Infrastructure
 
@@ -44,7 +45,7 @@ https://api.biaotech.dev/api/docs
 * PM2 Process Manager
 * Docker Compose
 * GitHub Actions CI/CD
-* HTTPS with Let's Encrypt
+* Let's Encrypt SSL
 
 ## Testing & Quality
 
@@ -52,6 +53,7 @@ https://api.biaotech.dev/api/docs
 * Supertest
 * ESLint
 * Prettier
+* TypeScript Type Checking
 
 ---
 
@@ -70,9 +72,11 @@ https://api.biaotech.dev/api/docs
 * CI/CD pipeline
 * Dockerized development environment
 * Centralized error handling
-* Request logging middleware
+* Structured logging with Pino
+* Request ID tracking
 * Rate limiting middleware
-* Incremental TypeScript migration strategy
+* Environment-based configuration
+* Production TypeScript build (`dist`)
 
 ---
 
@@ -95,7 +99,13 @@ GitHub Push
    ↓
 GitHub Actions
    ↓
-Run Tests
+Type Check
+   ↓
+Lint
+   ↓
+Tests
+   ↓
+Build
    ↓
 Deploy to AWS EC2
    ↓
@@ -163,6 +173,7 @@ Example response:
 backend/
 │
 ├── src/
+│   ├── config/
 │   ├── controllers/
 │   ├── database/
 │   ├── dtos/
@@ -175,9 +186,44 @@ backend/
 │
 ├── migrations/
 ├── tests/
+├── dist/
 ├── docker-compose.yml
 ├── Dockerfile
+├── tsconfig.json
+├── tsconfig.build.json
 └── package.json
+```
+
+---
+
+# Environment Configuration
+
+## Local Development
+
+Use:
+
+```txt
+.env
+```
+
+Database host:
+
+```txt
+localhost
+```
+
+## Docker Development
+
+Use:
+
+```txt
+.env.docker
+```
+
+Database host:
+
+```txt
+postgres
 ```
 
 ---
@@ -200,6 +246,12 @@ npm install
 
 Create a `.env` file using `.env.example`.
 
+## Run Development Server
+
+```bash
+npm run dev
+```
+
 ---
 
 # Running with Docker
@@ -210,10 +262,18 @@ docker compose up --build
 
 ---
 
-# Run Development Server
+# Production Build
+
+Build TypeScript application:
 
 ```bash
-npm run dev
+npm run build
+```
+
+Start production build:
+
+```bash
+npm start
 ```
 
 ---
@@ -224,6 +284,18 @@ npm run dev
 npm test
 ```
 
+Type checking:
+
+```bash
+npm run type-check
+```
+
+Lint:
+
+```bash
+npm run lint
+```
+
 ---
 
 # API Documentation
@@ -231,7 +303,7 @@ npm test
 Swagger documentation:
 
 ```txt
-https://api.biaotech.dev/api/docs
+https://api.biaotech.dev/api/docs/
 ```
 
 ---
@@ -255,11 +327,15 @@ Deployment flow:
 ```txt
 Push to main branch
    ↓
-GitHub Actions workflow
+Install dependencies
+   ↓
+Run type-check
    ↓
 Run lint
    ↓
 Run tests
+   ↓
+Build application
    ↓
 Deploy to AWS EC2
    ↓
@@ -268,13 +344,14 @@ Restart PM2 service
 
 ---
 
-# Current Engineering Focus
+# Current Engineering Roadmap
 
-* TypeScript migration completion
-* Structured logging improvements
-* Repository pattern architecture
-* Refresh token implementation
-* API observability improvements
+* Repository Pattern
+* Refresh Token Authentication
+* API Observability
+* Test Coverage Reporting
+* OpenAPI Expansion
+* Complete TypeScript Migration
 
 ---
 
