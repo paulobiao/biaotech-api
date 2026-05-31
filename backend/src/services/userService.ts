@@ -1,4 +1,4 @@
-import { pool } from "../database/postgres";
+import * as userRepository from "../repositories/userRepository";
 import type { User } from "../types/user";
 
 interface FindUsersParams {
@@ -22,40 +22,16 @@ export const findUsers = async ({
   limit,
   search,
 }: FindUsersParams): Promise<FindUsersResult> => {
-  const offset = (page - 1) * limit;
+  const { users, total } = await userRepository.findUsers({
+    page,
+    limit,
+    search,
+  });
 
-  const values: Array<string | number> = [];
-  let whereClause = "";
-
-  if (search && search.trim() !== "") {
-    values.push(`%${search.trim()}%`);
-    whereClause = `WHERE name ILIKE $${values.length}`;
-  }
-
-  const countResult = await pool.query<{ total: string }>(
-    `SELECT COUNT(*) AS total FROM users ${whereClause}`,
-    values
-  );
-
-  values.push(limit);
-  values.push(offset);
-
-  const usersResult = await pool.query<User>(
-    `
-    SELECT * FROM users
-    ${whereClause}
-    ORDER BY id ASC
-    LIMIT $${values.length - 1}
-    OFFSET $${values.length}
-    `,
-    values
-  );
-
-  const total = Number(countResult.rows[0].total);
   const totalPages = Math.ceil(total / limit);
 
   return {
-    users: usersResult.rows,
+    users,
     pagination: {
       page,
       limit,
@@ -66,30 +42,19 @@ export const findUsers = async ({
 };
 
 export const findAllUsers = async (): Promise<User[]> => {
-  const result = await pool.query<User>("SELECT * FROM users ORDER BY id ASC");
-
-  return result.rows;
+  return userRepository.findAllUsers();
 };
 
 export const findUserById = async (
   id: string | number
 ): Promise<User | undefined> => {
-  const result = await pool.query<User>("SELECT * FROM users WHERE id = $1", [
-    id,
-  ]);
-
-  return result.rows[0];
+  return userRepository.findUserById(id);
 };
 
 export const createUser = async (name: string): Promise<User> => {
   const cleanName = name.trim();
 
-  const result = await pool.query<User>(
-    "INSERT INTO users (name) VALUES ($1) RETURNING *",
-    [cleanName]
-  );
-
-  return result.rows[0];
+  return userRepository.createUser(cleanName);
 };
 
 export const updateUser = async (
@@ -98,21 +63,11 @@ export const updateUser = async (
 ): Promise<User | undefined> => {
   const cleanName = name.trim();
 
-  const result = await pool.query<User>(
-    "UPDATE users SET name = $1 WHERE id = $2 RETURNING *",
-    [cleanName, id]
-  );
-
-  return result.rows[0];
+  return userRepository.updateUser(id, cleanName);
 };
 
 export const deleteUser = async (
   id: string | number
 ): Promise<User | undefined> => {
-  const result = await pool.query<User>(
-    "DELETE FROM users WHERE id = $1 RETURNING *",
-    [id]
-  );
-
-  return result.rows[0];
+  return userRepository.deleteUser(id);
 };

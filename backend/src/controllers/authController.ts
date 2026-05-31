@@ -1,11 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
-import jwt, { type Secret, type SignOptions } from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 
-import { pool } from "../database/postgres";
+import * as authService from "../services/authService";
 import { successResponse, errorResponse } from "../utils/apiResponse";
 import type { LoginDto } from "../dtos/auth.dto";
-import type { AuthUser } from "../types/user";
 
 export const login = async (
   req: Request,
@@ -20,38 +17,45 @@ export const login = async (
       return;
     }
 
-    const result = await pool.query<AuthUser>(
-      "SELECT * FROM auth_users WHERE email = $1",
-      [email]
-    );
+    const result = await authService.login({ email, password });
 
-    const user = result.rows[0];
-
-    if (!user) {
+    if (!result) {
       errorResponse(res, 401, "Credenciais inválidas");
       return;
     }
 
-    const passwordMatch = bcrypt.compareSync(password, user.password);
+    successResponse(res, 200, "Login realizado com sucesso", {
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-    if (!passwordMatch) {
-      errorResponse(res, 401, "Credenciais inválidas");
+export const refreshToken = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  try {
+    const { refreshToken } = req.body as { refreshToken?: string };
+
+    if (!refreshToken) {
+      errorResponse(res, 400, "Refresh token é obrigatório");
       return;
     }
 
-    const token = jwt.sign(
-      {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-    },
-      process.env.JWT_SECRET as Secret,
-      {
-        expiresIn: process.env.JWT_EXPIRES_IN || "1h",
-      } as SignOptions
-    );
+    const accessToken = authService.refreshAccessToken(refreshToken);
 
-    successResponse(res, 200, "Login realizado com sucesso", { token });
+    if (!accessToken) {
+      errorResponse(res, 401, "Refresh token inválido ou expirado");
+      return;
+    }
+
+    successResponse(res, 200, "Token renovado com sucesso", {
+      accessToken,
+    });
   } catch (error) {
     next(error);
   }

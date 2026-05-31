@@ -38,7 +38,10 @@ describe("Auth endpoints", () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.body.success).toBe(true);
-    expect(response.body.token).toBeDefined();
-    expect(typeof response.body.token).toBe("string");
+  expect(response.body.accessToken).toBeDefined();
+expect(typeof response.body.accessToken).toBe("string");
+
+expect(response.body.refreshToken).toBeDefined();
+expect(typeof response.body.refreshToken).toBe("string");
   });
 });

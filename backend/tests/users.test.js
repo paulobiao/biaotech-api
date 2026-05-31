@@ -25,7 +25,7 @@ describe("Users endpoints", () => {
         password: "123456",
       });
 
-    adminToken = loginResponse.body.token;
+   adminToken = loginResponse.body.accessToken;
 
     userToken = jwt.sign(
       {

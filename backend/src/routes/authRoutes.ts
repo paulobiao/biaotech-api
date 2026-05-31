@@ -1,6 +1,6 @@
 import express from "express";
 
-import { login } from "../controllers/authController";
+import { login, refreshToken } from "../controllers/authController";
 
 const authMiddlewareModule = require("../middleware/authMiddleware");
 const authMiddleware = authMiddlewareModule.default || authMiddlewareModule;
@@ -39,6 +39,7 @@ const router = express.Router();
  *         description: Invalid credentials
  */
 router.post("/login", login);
+router.post("/refresh", refreshToken);
 
 /**
  * @swagger
