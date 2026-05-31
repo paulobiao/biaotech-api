@@ -1,10 +1,8 @@
 import "dotenv/config";
 
 import { testConnection } from "./src/database/postgres";
-
-const runMigrations = require("./src/database/runMigrations");
-const initPostgres = require("./src/database/initPostgres");
-
+import runMigrations from "./src/database/runMigrations";
+import initPostgres from "./src/database/initPostgres";
 import app from "./src/app";
 
 const PORT = process.env.PORT || 3000;

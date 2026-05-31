@@ -3,18 +3,17 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import swaggerUi from "swagger-ui-express";
 
-const swaggerSpec = require("./config/swagger");
+import swaggerSpec from "./config/swagger";
 
-const apiRoutes = require("./routes/apiRoutes");
-const authRoutes = require("./routes/authRoutes");
-const userRoutesModule = require("./routes/userRoutes");
-const userRoutes = userRoutesModule.default || userRoutesModule;
-const healthRoutes = require("./routes/healthRoutes");
+import apiRoutes from "./routes/apiRoutes";
+import authRoutes from "./routes/authRoutes";
+import userRoutes from "./routes/userRoutes";
+import healthRoutes from "./routes/healthRoutes";
 
-const loggerMiddleware = require("./middleware/loggerMiddleware");
-const notFoundMiddleware = require("./middleware/notFoundMiddleware");
-const errorMiddleware = require("./middleware/errorMiddleware");
-const requestIdMiddleware = require("./middleware/requestIdMiddleware");
+import loggerMiddleware from "./middleware/loggerMiddleware";
+import notFoundMiddleware from "./middleware/notFoundMiddleware";
+import errorMiddleware from "./middleware/errorMiddleware";
+import requestIdMiddleware from "./middleware/requestIdMiddleware";
 
 const app = express();
 

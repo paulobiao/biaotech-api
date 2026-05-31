@@ -1,8 +1,11 @@
 const request = require("supertest");
 const appModule = require("../src/app");
 const app = appModule.default || appModule;
-const runMigrations = require("../src/database/runMigrations");
-const initPostgres = require("../src/database/initPostgres");
+const runMigrationsModule = require("../src/database/runMigrations");
+const runMigrations = runMigrationsModule.default || runMigrationsModule;
+
+const initPostgresModule = require("../src/database/initPostgres");
+const initPostgres = initPostgresModule.default || initPostgresModule;
 const { pool } = require("../src/database/postgres");
 
 beforeAll(async () => {

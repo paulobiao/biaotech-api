@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false
+  },
+  "exclude": [
+    "tests",
+    "**/*.test.ts",
+    "**/*.test.js",
+    "jest.config.js",
+    "jest.teardown.js",
+    "dist",
+    "node_modules"
+  ]
+}

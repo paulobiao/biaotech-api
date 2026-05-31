@@ -6,7 +6,7 @@ const authMiddleware = authMiddlewareModule.default || authMiddlewareModule;
 const authorizeRolesModule = require("../middleware/authorizeRoles");
 const authorizeRoles = authorizeRolesModule.default || authorizeRolesModule;
 
-const validateRequest = require("../middleware/validateRequest");
+import validateRequest from "../middleware/validateRequest";
 
 const { createUserSchema } = require("../validators/userValidator");
 
