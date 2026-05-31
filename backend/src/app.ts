@@ -1,3 +1,4 @@
+import cors from "cors";
 import express from "express";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
@@ -16,6 +17,16 @@ import errorMiddleware from "./middleware/errorMiddleware";
 import requestIdMiddleware from "./middleware/requestIdMiddleware";
 
 const app = express();
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://biaotech.dev",
+      "https://www.biaotech.dev",
+    ],
+    credentials: true,
+  })
+);
 
 app.set("trust proxy", 1);
 
