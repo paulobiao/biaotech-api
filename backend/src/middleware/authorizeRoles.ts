@@ -1,9 +1,8 @@
 import type { Response, NextFunction } from "express";
 
 import type { AuthRequest } from "../types/auth";
-import type { UserRole } from "../types/roles";
 
-const authorizeRoles = (...allowedRoles: UserRole[]) => {
+const authorizeRoles = (...allowedRoles: string[]) => {
   return (
     req: AuthRequest,
     res: Response,
@@ -14,7 +13,6 @@ const authorizeRoles = (...allowedRoles: UserRole[]) => {
         success: false,
         message: "Usuário não autenticado",
       });
-
       return;
     }
 
@@ -23,7 +21,6 @@ const authorizeRoles = (...allowedRoles: UserRole[]) => {
         success: false,
         message: "Acesso negado",
       });
-
       return;
     }
 
