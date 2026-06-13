@@ -262,6 +262,30 @@ docker compose up --build
 
 ---
 
+# Frontend
+
+## Stack
+
+* React
+* Vite
+* TypeScript
+* Tailwind CSS
+* shadcn/ui
+
+## Running Locally
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## Authentication
+
+The frontend uses an access token + refresh token strategy. The access token is attached to every request via the `Authorization` header. When a request returns HTTP 401, the client automatically attempts to exchange the refresh token for a new access token and retries the original request — no manual re-login required.
+
+---
+
 # Production Build
 
 Build TypeScript application:
@@ -315,6 +339,7 @@ https://api.biaotech.dev/api/docs/
 * RBAC middleware protects admin-only operations.
 * Rate limiting helps mitigate abuse.
 * Sensitive credentials are intentionally not exposed in this repository.
+* **Token storage trade-off:** both the access token and the refresh token are currently stored in `localStorage`. This is straightforward to implement but exposes tokens to any JavaScript running on the page (XSS risk). The planned improvement is to move the refresh token to an `httpOnly` + `SameSite=Strict` cookie, which is inaccessible to JavaScript and significantly reduces that attack surface. The access token can stay in memory (not persisted) for short-lived use. The trade-off is added backend complexity to set and clear the cookie correctly across environments.
 
 ---
 
@@ -347,7 +372,6 @@ Restart PM2 service
 # Current Engineering Roadmap
 
 * Repository Pattern
-* Refresh Token Authentication
 * API Observability
 * Test Coverage Reporting
 * OpenAPI Expansion
