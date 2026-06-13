@@ -8,5 +8,5 @@ module.exports = {
 
   moduleFileExtensions: ["js", "ts"],
 
-  testMatch: ["**/tests/**/*.test.js"],
+  testMatch: ["**/tests/**/*.test.ts"],
 };

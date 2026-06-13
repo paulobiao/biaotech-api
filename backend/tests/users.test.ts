@@ -1,31 +1,27 @@
-const request = require("supertest");
-const jwt = require("jsonwebtoken");
-
-const appModule = require("../src/app");
-const app = appModule.default || appModule;
-const runMigrationsModule = require("../src/database/runMigrations");
-const runMigrations = runMigrationsModule.default || runMigrationsModule;
-
-const initPostgresModule = require("../src/database/initPostgres");
-const initPostgres = initPostgresModule.default || initPostgresModule;
+import request from "supertest";
+import jwt from "jsonwebtoken";
+import app from "../src/app";
+import runMigrations from "../src/database/runMigrations";
+import initPostgres from "../src/database/initPostgres";
+import { Response } from "supertest";
 
 describe("Users endpoints", () => {
-  let adminToken;
-  let userToken;
-  let createdUserId;
+  let adminToken: string;
+  let userToken: string;
+  let createdUserId: number;
 
   beforeAll(async () => {
     await runMigrations();
     await initPostgres();
 
-    const loginResponse = await request(app)
+    const loginResponse: Response = await request(app)
       .post("/api/auth/login")
       .send({
         email: "admin@biaotech.dev",
         password: "123456",
       });
 
-   adminToken = loginResponse.body.accessToken;
+    adminToken = loginResponse.body.accessToken;
 
     userToken = jwt.sign(
       {
@@ -33,7 +29,7 @@ describe("Users endpoints", () => {
         email: "regular@biaotech.dev",
         role: "user",
       },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET as string,
       {
         expiresIn: "1h",
       }
@@ -41,14 +37,14 @@ describe("Users endpoints", () => {
   });
 
   it("should deny access without token", async () => {
-    const response = await request(app).get("/api/users");
+    const response: Response = await request(app).get("/api/users");
 
     expect(response.statusCode).toBe(401);
     expect(response.body.success).toBe(false);
   });
 
   it("should allow access with valid JWT token", async () => {
-    const response = await request(app)
+    const response: Response = await request(app)
       .get("/api/users")
       .set("Authorization", `Bearer ${adminToken}`);
 
@@ -58,7 +54,7 @@ describe("Users endpoints", () => {
   });
 
   it("should create a new user", async () => {
-    const response = await request(app)
+    const response: Response = await request(app)
       .post("/api/users")
       .set("Authorization", `Bearer ${adminToken}`)
       .send({
@@ -73,7 +69,7 @@ describe("Users endpoints", () => {
   });
 
   it("should validate user name", async () => {
-    const response = await request(app)
+    const response: Response = await request(app)
       .post("/api/users")
       .set("Authorization", `Bearer ${adminToken}`)
       .send({
@@ -85,7 +81,7 @@ describe("Users endpoints", () => {
   });
 
   it("should get user by id", async () => {
-    const response = await request(app)
+    const response: Response = await request(app)
       .get(`/api/users/${createdUserId}`)
       .set("Authorization", `Bearer ${adminToken}`);
 
@@ -94,7 +90,7 @@ describe("Users endpoints", () => {
   });
 
   it("should update user", async () => {
-    const response = await request(app)
+    const response: Response = await request(app)
       .put(`/api/users/${createdUserId}`)
       .set("Authorization", `Bearer ${adminToken}`)
       .send({
@@ -106,7 +102,7 @@ describe("Users endpoints", () => {
   });
 
   it("should deny delete user for regular user role", async () => {
-    const response = await request(app)
+    const response: Response = await request(app)
       .delete(`/api/users/${createdUserId}`)
       .set("Authorization", `Bearer ${userToken}`);
 
@@ -116,7 +112,7 @@ describe("Users endpoints", () => {
   });
 
   it("should allow delete user for admin role", async () => {
-    const response = await request(app)
+    const response: Response = await request(app)
       .delete(`/api/users/${createdUserId}`)
       .set("Authorization", `Bearer ${adminToken}`);
 
