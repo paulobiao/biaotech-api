@@ -3,3 +3,7 @@ backend/database.sqlite
 backend/.env
 backend/.env.docker
 backend/dist/
+.DS_Store
+**/.env
+!**/.env.example
+!**/.env.test
