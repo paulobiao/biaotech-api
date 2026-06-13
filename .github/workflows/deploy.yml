@@ -82,8 +82,9 @@ jobs:
             cd backend
 
             npm install
+            npm run build
 
-            pm2 restart backend --update-env || pm2 start server.js --name backend
+            pm2 restart backend --update-env || pm2 start dist/server.js --name backend
 
             pm2 save
             pm2 list
@@ -99,7 +100,7 @@ jobs:
 
             cd /home/ec2-user/aws-ec2-nginx-deploy/frontend
 
-            npm ci
+            npm install
 
             VITE_API_URL=https://api.biaotech.dev/api npm run build
 
