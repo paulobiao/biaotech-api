@@ -114,6 +114,7 @@ router.get("/:id", authMiddleware, getUserById);
 router.post(
   "/",
   authMiddleware,
+  authorizeRoles("admin"),
   validateRequest(createUserSchema),
   createUser
 );
@@ -159,6 +160,7 @@ router.post(
 router.put(
   "/:id",
   authMiddleware,
+  authorizeRoles("admin"),
   validateRequest(createUserSchema),
   updateUser
 );

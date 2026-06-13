@@ -2,10 +2,21 @@ import bcrypt from "bcryptjs";
 
 import { pool } from "./postgres";
 
+const FAKE_USERS = [
+  "Ana Souza",
+  "Carlos Mendes",
+  "Fernanda Lima",
+  "Ricardo Oliveira",
+  "Juliana Santos",
+  "Bruno Costa",
+  "Mariana Ferreira",
+  "Lucas Pereira",
+];
+
 const initPostgres = async (): Promise<void> => {
   try {
     const adminUser = await pool.query(
-      "SELECT * FROM auth_users WHERE email = $1",
+      "SELECT id FROM auth_users WHERE email = $1",
       ["admin@biaotech.dev"]
     );
 
@@ -13,14 +24,34 @@ const initPostgres = async (): Promise<void> => {
       const hashedPassword = bcrypt.hashSync("123456", 10);
 
       await pool.query(
-        `
-        INSERT INTO auth_users (email, password, role)
-        VALUES ($1, $2, $3)
-        `,
+        "INSERT INTO auth_users (email, password, role) VALUES ($1, $2, $3)",
         ["admin@biaotech.dev", hashedPassword, "admin"]
       );
 
       console.log("✅ PostgreSQL admin user created");
+    }
+
+    const demoUser = await pool.query(
+      "SELECT id FROM auth_users WHERE email = $1",
+      ["demo@biaotech.dev"]
+    );
+
+    if (demoUser.rows.length === 0) {
+      const hashedPassword = bcrypt.hashSync("demo1234", 10);
+
+      await pool.query(
+        "INSERT INTO auth_users (email, password, role) VALUES ($1, $2, $3)",
+        ["demo@biaotech.dev", hashedPassword, "user"]
+      );
+
+      console.log("✅ PostgreSQL demo user created");
+    }
+
+    for (const name of FAKE_USERS) {
+      await pool.query(
+        "INSERT INTO users (name) SELECT $1 WHERE NOT EXISTS (SELECT 1 FROM users WHERE name = $1)",
+        [name]
+      );
     }
 
     console.log("✅ PostgreSQL seed completed");
