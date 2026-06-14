@@ -17,8 +17,8 @@ import { Label } from "@/components/ui/label";
 export default function LoginPage() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("admin@biaotech.dev");
-  const [password, setPassword] = useState("123456");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -68,6 +68,10 @@ export default function LoginPage() {
           <CardDescription className="text-slate-400">
             Access the secure admin dashboard.
           </CardDescription>
+
+          <p className="text-xs text-slate-500 mt-1">
+            Demo: demo@biaotech.dev / demo1234
+          </p>
         </CardHeader>
 
         <CardContent>
@@ -77,6 +81,7 @@ export default function LoginPage() {
 
               <Input
                 className="border-slate-700 bg-slate-950"
+                placeholder="demo@biaotech.dev"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
               />
@@ -88,6 +93,7 @@ export default function LoginPage() {
               <Input
                 className="border-slate-700 bg-slate-950"
                 type="password"
+                placeholder="••••••••"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
               />
