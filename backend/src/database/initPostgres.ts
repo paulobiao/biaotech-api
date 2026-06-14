@@ -21,7 +21,13 @@ const initPostgres = async (): Promise<void> => {
     );
 
     if (adminUser.rows.length === 0) {
-      const hashedPassword = bcrypt.hashSync("123456", 10);
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      if (!adminPassword) {
+        throw new Error(
+          "ADMIN_PASSWORD environment variable is not set. Refusing to seed admin user with a default password."
+        );
+      }
+      const hashedPassword = bcrypt.hashSync(adminPassword, 10);
 
       await pool.query(
         "INSERT INTO auth_users (email, password, role) VALUES ($1, $2, $3)",
