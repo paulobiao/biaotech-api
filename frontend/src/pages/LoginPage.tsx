@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LockKeyhole, Loader2 } from "lucide-react";
 
-import { api } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,20 +29,7 @@ export default function LoginPage() {
     setMessage("");
 
     try {
-      const response = await api.post("/auth/login", {
-        email,
-        password,
-      });
-
-      localStorage.setItem(
-        "accessToken",
-        response.data.accessToken
-      );
-
-      localStorage.setItem(
-        "refreshToken",
-        response.data.refreshToken
-      );
+      await login(email, password);
 
       setMessage("Login realizado com sucesso.");
 
